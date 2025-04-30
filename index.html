@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Cat</title>
+    <!-- 引入Montserrat字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入外部CSS文件 -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="title">
+        <img src="assets/images/title.png" alt="BONGO CAT" class="title-image">
+    </div>
+
+    <div class="controls-container">
+        <div class="control-group">
+            <div class="control-label">Meow</div>
+            <div class="keys">
+                <div class="key key-wide" id="key-space">SPACE</div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">Bongos</div>
+            <div class="keys">
+                <div class="key" id="key-a">A</div>
+                <div class="key" id="key-d">D</div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">Piano</div>
+            <div class="keys">
+                <div class="key" id="key-1">1</div>
+                <span class="dots-text">...</span>
+                <div class="key" id="key-9">9</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cat-container">
+        <!-- 猫咪图片 -->
+        <img src="assets/images/up.png" alt="Cat" class="cat-image cat-up" id="cat-up">
+        <img src="assets/images/Bongs.png" alt="Bongos" class="cat-image cat-bongos">
+    </div>
+
+    <!-- 引入外部JS文件 -->
+    <script src="script.js"></script>
+</body>
+</html> 
