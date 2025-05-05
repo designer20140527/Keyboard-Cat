@@ -10,6 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const catBongos = document.querySelector('.cat-bongos'); // 获取Bongs图片元素
     const catContainer = document.querySelector('.cat-container');
     
+    // 获取触屏按钮元素
+    const touchMeow = document.getElementById('touch-meow');
+    const touchLeft = document.getElementById('touch-left');
+    const touchRight = document.getElementById('touch-right');
+    const touchButtons = document.querySelectorAll('.touch-button');
+    
+    // 检测是否为触屏设备
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isMobileDevice = window.innerWidth <= 1024;
+    
+    // 如果是桌面设备，隐藏触屏控制区域
+    if (!isTouchDevice && !isMobileDevice) {
+        const touchControlsContainer = document.querySelector('.touch-controls-container');
+        if (touchControlsContainer) {
+            touchControlsContainer.style.display = 'none';
+        }
+    }
+    
     // 跟踪当前状态 - 是否在钢琴模式
     let isPianoMode = false;
     // 跟踪当前按下的数字键
@@ -59,8 +77,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const note = document.createElement('div');
         note.className = 'piano-note';
         note.textContent = '♪';
-        note.style.left = `${150 + (noteNumber - 1) * 20}px`;
-        note.style.top = '50px';
+        
+        // 检测设备宽度，为移动设备设置不同的位置
+        if (window.innerWidth <= 1024) {
+            // iPad和移动设备上音符居中显示
+            note.style.left = '50%';
+            note.style.transform = 'translateX(-50%)';
+            note.style.top = '50px';
+        } else {
+            // 桌面版保持原来的位置
+            note.style.left = `${150 + (noteNumber - 1) * 20}px`;
+            note.style.top = '50px';
+        }
+        
         catContainer.appendChild(note);
         
         setTimeout(() => {
@@ -190,6 +219,122 @@ document.addEventListener('DOMContentLoaded', function() {
             // 注意：我们在这里不切换回邦戈鼓模式，因为我们希望保持钢琴模式
         }
     }
+
+    // 触屏控制事件处理 - 喵叫
+    function handleMeowTouch() {
+        // 猫咪喵叫动画 - 更改图片并增大
+        catUp.src = images.upMeow;
+        catUp.style.transform = 'scale(1.05)';
+        sounds.meow.currentTime = 0;
+        sounds.meow.play();
+        // 切换回邦戈鼓模式
+        switchToBongoMode();
+        
+        // 添加活跃状态样式
+        touchMeow.classList.add('active');
+    }
+    
+    // 触屏控制事件处理 - 左邦戈鼓
+    function handleLeftTouch() {
+        // 切换为左边敲击图片
+        catUp.src = images.leftDown;
+        sounds.bongoLeft.currentTime = 0;
+        sounds.bongoLeft.play();
+        // 切换回邦戈鼓模式
+        switchToBongoMode();
+        
+        // 添加活跃状态样式
+        touchLeft.classList.add('active');
+    }
+    
+    // 触屏控制事件处理 - 右邦戈鼓
+    function handleRightTouch() {
+        // 切换为右边敲击图片
+        catUp.src = images.rightDown;
+        sounds.bongoRight.currentTime = 0;
+        sounds.bongoRight.play();
+        // 切换回邦戈鼓模式
+        switchToBongoMode();
+        
+        // 添加活跃状态样式
+        touchRight.classList.add('active');
+    }
+    
+    // 触屏控制事件处理 - 钢琴音符
+    function handlePianoTouch(noteNumber) {
+        // 切换到钢琴模式
+        switchToPianoMode();
+        
+        // 根据数字的奇偶性改变猫咪图片
+        if (noteNumber % 2 === 1) { // 奇数: 1,3,5
+            catUp.src = images.leftDown;
+        } else { // 偶数: 2
+            catUp.src = images.rightDown;
+        }
+        
+        // 播放音效并创建音符
+        const noteIndex = noteNumber - 1;
+        if (sounds.piano[noteIndex]) {
+            sounds.piano[noteIndex].currentTime = 0;
+            sounds.piano[noteIndex].play();
+            createPianoNote(noteNumber);
+        }
+    }
+    
+    // 触屏控制结束事件处理
+    function handleTouchEnd() {
+        // 恢复猫咪原始状态
+        catUp.src = images.up;
+        catUp.style.transform = 'scale(1)';
+        
+        // 移除所有触屏按钮的活跃状态
+        touchButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+    }
+    
+    // 添加触屏事件监听
+    if (touchMeow) {
+        touchMeow.addEventListener('touchstart', handleMeowTouch);
+        touchMeow.addEventListener('touchend', handleTouchEnd);
+        // 添加鼠标事件用于在桌面端测试
+        touchMeow.addEventListener('mousedown', handleMeowTouch);
+        touchMeow.addEventListener('mouseup', handleTouchEnd);
+    }
+    
+    if (touchLeft) {
+        touchLeft.addEventListener('touchstart', handleLeftTouch);
+        touchLeft.addEventListener('touchend', handleTouchEnd);
+        // 添加鼠标事件用于在桌面端测试
+        touchLeft.addEventListener('mousedown', handleLeftTouch);
+        touchLeft.addEventListener('mouseup', handleTouchEnd);
+    }
+    
+    if (touchRight) {
+        touchRight.addEventListener('touchstart', handleRightTouch);
+        touchRight.addEventListener('touchend', handleTouchEnd);
+        // 添加鼠标事件用于在桌面端测试
+        touchRight.addEventListener('mousedown', handleRightTouch);
+        touchRight.addEventListener('mouseup', handleTouchEnd);
+    }
+    
+    // 为钢琴数字按钮添加事件监听
+    const pianoBtns = [
+        document.getElementById('touch-1'),
+        document.getElementById('touch-2'),
+        document.getElementById('touch-3')
+    ];
+    
+    pianoBtns.forEach((btn, index) => {
+        if (btn) {
+            const noteNumber = index + 1;
+            btn.addEventListener('touchstart', () => handlePianoTouch(noteNumber));
+            btn.addEventListener('touchend', handleTouchEnd);
+            // 添加鼠标事件用于在桌面端测试
+            btn.addEventListener('mousedown', () => handlePianoTouch(noteNumber));
+            btn.addEventListener('mouseup', handleTouchEnd);
+        }
+    });
 
     // 添加键盘事件监听
     document.addEventListener('keydown', handleKeyDown);
