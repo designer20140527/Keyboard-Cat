@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 预加载图片
     const images = {
         up: 'assets/images/up.png',
+        upMeow: 'assets/images/up-meow.png',
         leftDown: 'assets/images/left-down.png',
         rightDown: 'assets/images/right-down.png',
         bongos: 'assets/images/Bongs.png',
@@ -37,9 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 音效对象
     const sounds = {
-        meow: new Audio('https://freesound.org/data/previews/415/415209_5121236-lq.mp3'),
-        bongoLeft: new Audio('https://freesound.org/data/previews/156/156624_2703579-lq.mp3'),
-        bongoRight: new Audio('https://freesound.org/data/previews/156/156623_2703579-lq.mp3'),
+        meow: new Audio('assets/sounds/meow.mp3'),
+        bongoLeft: new Audio('assets/sounds/bongoleft.wav'),
+        bongoRight: new Audio('assets/sounds/bongoright.wav'),
         piano: [
             new Audio('https://freesound.org/data/previews/39/39186_35187-lq.mp3'),
             new Audio('https://freesound.org/data/previews/39/39187_35187-lq.mp3'),
@@ -89,8 +90,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 空格键 - 喵叫
         if (key === ' ' || key === 'spacebar') {
+            // 阻止空格键的默认滚动行为
+            event.preventDefault();
             keySpace.classList.add('key-active');
-            // 猫咪喵叫动画 - 可以添加缩放或其他效果
+            // 猫咪喵叫动画 - 更改图片并增大
+            catUp.src = images.upMeow;
             catUp.style.transform = 'scale(1.05)';
             sounds.meow.currentTime = 0;
             sounds.meow.play();
@@ -154,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (key === ' ' || key === 'spacebar') {
             keySpace.classList.remove('key-active');
             // 恢复猫咪原始状态
+            catUp.src = images.up;
             catUp.style.transform = 'scale(1)';
         }
         
